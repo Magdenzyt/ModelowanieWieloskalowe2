@@ -60,10 +60,10 @@ namespace WindowsFormsApplication2
             {
                 for (int i = 0; i < 50; i++)
                 {
-                    int z = rnd.Next(1, 50);
                     for (int j = 0; j < 50; j++)
                     {
-                        if (j == z)
+                        int z = rnd.Next(0, 4);
+                        if (z>=3)
                             beginTab[i][j] = true;
                         else
                             beginTab[i][j] = false;
