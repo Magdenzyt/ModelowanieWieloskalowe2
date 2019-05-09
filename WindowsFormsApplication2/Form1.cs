@@ -20,17 +20,24 @@ namespace WindowsFormsApplication2
         List<List<bool>> beginTab = new List<List<bool>> ();
         Random rnd = new Random();
 
+        Timer timer;
+
+        int wys;
+        int szer;
+
 
         public Form1()
         {
             InitializeComponent();
-            
+            timer = new Timer();
+            timer.Interval = 200;
+            timer.Tick += new EventHandler(timer1_Tick);
             DrawArea = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
             pictureBox1.Image = DrawArea;
             g = Graphics.FromImage(DrawArea);
+            
 
-            for(int i = 0; i<50; i++)
-               beginTab.Add(Enumerable.Repeat(false, 50).ToList());
+            
 
             comboBox1.Items.Add("Niezmienny");
             comboBox1.Items.Add("Glider");
@@ -40,83 +47,55 @@ namespace WindowsFormsApplication2
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        public void timer1_Tick(object sender, EventArgs e)
         {
-            int czas = int.Parse(textBox1.Text);
-            g.Clear(Color.Transparent);
-            if (comboBox1.Text == "Niezmienny")
+            List<List<bool>> nextTab = new List<List<bool>>();
+            for (int a = 0; a < wys; a++)
+                nextTab.Add(Enumerable.Repeat(false, szer).ToList());
+
+            for (int j = 0; j < wys; j++)
             {
-                fromFile("niezmienny.txt");
-            }
-            else if (comboBox1.Text == "Glider")
-            {
-                fromFile("glider.txt");
-            }
-            else if (comboBox1.Text == "Oscylator")
-            {
-                fromFile("oscylator.txt");
-            }
-            else if (comboBox1.Text == "Losowy")
-            {
-                for (int i = 0; i < 50; i++)
+                for (int k = 0; k < szer; k++)
                 {
-                    for (int j = 0; j < 50; j++)
-                    {
-                        int z = rnd.Next(0, 4);
-                        if (z>=3)
-                            beginTab[i][j] = true;
-                        else
-                            beginTab[i][j] = false;
-                    }
+                    nextTab[j][k] = getDot(j, k);
                 }
             }
-            else if (comboBox1.Text == "Własny")
+            beginTab = nextTab;
+            g.Clear(Color.Transparent);
+            for (int z = 0; z < wys; z++)
             {
-                fromFile("wlasny.txt");
-            }
-            ///////////////////////////////////////////////////////////////
-            for (int i = 0; i < 50; i++)
-            {
-                for (int j = 0; j < 50; j++)
+                for (int j = 0; j < szer; j++)
                 {
-                    if (beginTab[i][j] == true)
-                        g.FillRectangle(pinkBrush, i*10, j*10, 10, 10);
+                    if (beginTab[z][j] == true)
+                        g.FillRectangle(pinkBrush, z * (500 / wys), j * (500 / szer), 500 / wys, 500 / szer);
                 }
             }
             pictureBox1.Image = DrawArea;
-            Wait(czas+300);
-            while(true)
-            {
-                List<List<bool>> nextTab = new List<List<bool>>();
-                for (int a = 0; a < 50; a++)
-                    nextTab.Add(Enumerable.Repeat(false, 50).ToList());
+        }
 
-                for (int j = 0; j < 50; j++)
-                {    
-                    for (int k = 0; k < 50; k++)
-                    { 
-                        nextTab[j][k] = getDot(j, k);
-                    }
-                }
-                beginTab = nextTab;
-                g.Clear(Color.Transparent);
-                for (int z = 0; z < 50; z++)
-                {
-                    for (int j = 0; j < 50; j++)
-                    {
-                        if (beginTab[z][j] == true)
-                            g.FillRectangle(pinkBrush, z * 10, j * 10, 10, 10);
-                    }
-                }
-                pictureBox1.Image = DrawArea;
-                Wait(czas);
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
+            if (timer.Enabled)
+            {
+                timer.Stop();
             }
+            else
+                timer.Start();
             
         }
 
         public void fromFile(string filename)
         {
             string[] lines = File.ReadAllLines(filename);
+
+            for(int i =0; i<beginTab.Count; i++)
+            {
+                for(int j = 0; j<beginTab[i].Count; j++)
+                {
+                    beginTab[i][j] = false;
+                }
+            }
 
             for (int i = 0; i < lines.Length; i++)
             {
@@ -149,35 +128,35 @@ namespace WindowsFormsApplication2
         {
             int nc = 0;
 
-            if (beginTab[mod(x + 1, 50)][y])
+            if (beginTab[mod(x + 1, wys)][y])
             {
                 nc++;
             }
-            if (beginTab[mod(x + 1, 50)][mod(y + 1, 50)])
+            if (beginTab[mod(x + 1, wys)][mod(y + 1, szer)])
             {
                 nc++;
             }
-            if (beginTab[x][mod(y + 1, 50)])
+            if (beginTab[x][mod(y + 1, szer)])
             {
                 nc++;
             }
-            if (beginTab[x][mod(y - 1, 50)])
+            if (beginTab[x][mod(y - 1, szer)])
             {
                 nc++;
             }
-            if (beginTab[mod(x + 1, 50)][mod(y - 1, 50)])
+            if (beginTab[mod(x + 1, wys)][mod(y - 1, szer)])
             {
                 nc++;
             }
-            if (beginTab[mod(x - 1, 50)][y])
+            if (beginTab[mod(x - 1, wys)][y])
             {
                 nc++;
             }
-            if (beginTab[mod(x - 1, 50)][mod(y - 1, 50)])
+            if (beginTab[mod(x - 1, wys)][mod(y - 1, szer)])
             {
                 nc++;
             }
-            if (beginTab[mod(x - 1, 50)][mod(y + 1, 50)])
+            if (beginTab[mod(x - 1, wys)][mod(y + 1, szer)])
             {
                 nc++;
             }
@@ -190,6 +169,80 @@ namespace WindowsFormsApplication2
             while ((DateTime.Now - start).TotalMilliseconds < ms)
                 Application.DoEvents();
 
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            MouseEventArgs myszka = (MouseEventArgs)e;
+            Point coordinates = myszka.Location;
+
+            int x = coordinates.X / (500/wys);
+            int y = coordinates.Y / (500/szer);
+
+            beginTab[x][y] = true;
+
+            g.Clear(Color.Transparent);
+            for (int z = 0; z < wys; z++)
+            {
+                for (int j = 0; j < szer; j++)
+                {
+                    if (beginTab[z][j] == true)
+                        g.FillRectangle(pinkBrush, z * (500 / wys), j * (500 / szer), 500 / wys, 500 / szer);
+                }
+            }
+            pictureBox1.Image = DrawArea;
+        }
+
+        private void comboBox1_SelectedValueChanged(object sender, EventArgs e)
+        {
+            wys = int.Parse(textBox2.Text);
+            szer = int.Parse(textBox3.Text);
+            for (int i = 0; i < wys; i++)
+                beginTab.Add(Enumerable.Repeat(false, szer).ToList());
+            int czas = int.Parse(textBox1.Text);
+            timer.Interval = czas;
+            g.Clear(Color.Transparent);
+            if (comboBox1.Text == "Niezmienny")
+            {
+                fromFile("niezmienny.txt");
+            }
+            else if (comboBox1.Text == "Glider")
+            {
+                fromFile("glider.txt");
+            }
+            else if (comboBox1.Text == "Oscylator")
+            {
+                fromFile("oscylator.txt");
+            }
+            else if (comboBox1.Text == "Losowy")
+            {
+                for (int i = 0; i < wys; i++)
+                {
+                    for (int j = 0; j < szer; j++)
+                    {
+                        int z = rnd.Next(0, 4);
+                        if (z >= 3)
+                            beginTab[i][j] = true;
+                        else
+                            beginTab[i][j] = false;
+                    }
+                }
+            }
+            else if (comboBox1.Text == "Własny")
+            {
+                fromFile("wlasny.txt");
+            }
+            ///////////////////////////////////////////////////////////////
+            for (int i = 0; i < wys; i++)
+            {
+                for (int j = 0; j < szer; j++)
+                {
+                    if (beginTab[i][j] == true)
+                        g.FillRectangle(pinkBrush, i * (500 / wys), j * (500 / szer), 500 / wys, 500 / szer);
+                }
+            }
+            pictureBox1.Image = DrawArea;
+            Wait(czas + 300);
         }
     }
 }
