@@ -67,7 +67,12 @@ namespace WindowsFormsApplication2
                 for (int j = 0; j < szer; j++)
                 {
                     if (beginTab[z][j] == true)
-                        g.FillRectangle(pinkBrush, z * (500 / wys), j * (500 / szer), 500 / wys, 500 / szer);
+                    {
+                        if (wys > szer)
+                            g.FillRectangle(pinkBrush, z * (500 / wys), j * (500 / wys), 500 / wys, 500 / wys);
+                        if (szer > wys)
+                            g.FillRectangle(pinkBrush, z * (500 / szer), j * (500 / szer), 500 / szer, 500 / szer);
+                    }
                 }
             }
             pictureBox1.Image = DrawArea;
@@ -187,7 +192,12 @@ namespace WindowsFormsApplication2
                 for (int j = 0; j < szer; j++)
                 {
                     if (beginTab[z][j] == true)
-                        g.FillRectangle(pinkBrush, z * (500 / wys), j * (500 / szer), 500 / wys, 500 / szer);
+                    {
+                        if (wys > szer)
+                            g.FillRectangle(pinkBrush, z * (500 / wys), j * (500 / wys), 500 / wys, 500 / wys);
+                        if (szer > wys)
+                            g.FillRectangle(pinkBrush, z * (500 / szer), j * (500 / szer), 500 / szer, 500 / szer);
+                    }
                 }
             }
             pictureBox1.Image = DrawArea;
@@ -238,7 +248,12 @@ namespace WindowsFormsApplication2
                 for (int j = 0; j < szer; j++)
                 {
                     if (beginTab[i][j] == true)
-                        g.FillRectangle(pinkBrush, i * (500 / wys), j * (500 / szer), 500 / wys, 500 / szer);
+                    {
+                        if (wys > szer)
+                            g.FillRectangle(pinkBrush, i * (500 / wys), j * (500 / wys), 500 / wys, 500 / wys);
+                        if (szer > wys)
+                            g.FillRectangle(pinkBrush, i * (500 / szer), j * (500 / szer), 500 / szer, 500 / szer);
+                    }
                 }
             }
             pictureBox1.Image = DrawArea;
